@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>👴 老人管理</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .action-buttons {
+            display: inline-flex;
+            gap: 0.5rem; /* 按钮之间 8px 间距 */
+        }
+
+        .action-buttons form {
+            margin: 0; /* 去掉默认的上下 margin */
+        }
+
+        .col-actions {
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        /* 分页样式 —— 跟护理计划那页一模一样 */
+        .btn,
+        .page-link {
+            text-decoration: none;
+        }
+
+        .pagination {
+            list-style: none;
+            margin: 1rem 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .pagination li {
+            margin: 0;
+        }
+
+        .pagination li.disabled .btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .pagination li.active .btn {
+            background: #357ABD;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 头部、导航直接插入 -->
+<div th:insert="~{fragments :: site-header}"></div>
+<div th:insert="~{fragments :: site-nav}"></div>
+
+<main class="container">
+    <section class="card">
+        <h2>➕ 新增老人</h2>
+        <form th:action="@{/elders/add}" method="post" th:object="${elder}">
+            <label>
+                姓名：
+                <input type="text" th:field="*{name}" required/>
+            </label><br/>
+            <label>
+                性别：
+                <select th:field="*{gender}" required>
+                    <option value="" disabled selected>请选择</option>
+                    <option value="M">M</option>
+                    <option value="F">F</option>
+                </select>
+            </label><br/>
+            <label>
+                身份证：
+                <input type="text" th:field="*{idCard}" required/>
+            </label><br/>
+            <label>
+                年龄：
+                <input type="number" th:field="*{age}" required min="0"/>
+            </label><br/>
+            <label>
+                联系电话：
+                <input type="text" th:field="*{contact}" required/>
+            </label><br/>
+            <label>
+                地址：
+                <input type="text" th:field="*{address}" required/>
+            </label><br/>
+            <label>
+                过敏史：
+                <input type="text" th:field="*{allergies}" required/>
+            </label><br/>
+            <label>
+                病史：
+                <input type="text" th:field="*{medicalHistory}" required/>
+            </label><br/>
+            <label>
+                紧急联系人：
+                <input type="text" th:field="*{emergencyContact}" required/>
+            </label><br/>
+            <label>
+                机构ID：
+                <input type="number" th:field="*{institutionId}" required min="1"/>
+            </label><br/>
+            <button type="submit">提交</button>
+        </form>
+    </section>
+
+
+    <section class="card">
+        <h2>📋 老人列表</h2>
+        <!-- 整块包一个 fragment -->
+        <div id="elderTable" th:fragment="elderTable">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>年龄</th>
+                    <th class="col-actions">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${elders}">
+                    <td th:text="${e.elderId}">1</td>
+                    <td th:text="${e.name}">张三</td>
+                    <td th:text="${e.gender}">M</td>
+                    <td th:text="${e.age}">75</td>
+                    <td class="col-actions">
+                        <div class="action-buttons">
+                            <!-- 查看详情 -->
+                            <form th:action="@{|/elders/${e.elderId}|}" method="get">
+                                <button type="submit" class="btn">详情</button>
+                            </form>
+                            <!-- 归档 -->
+                            <form th:action="@{|/elders/${e.elderId}/archive|}" method="post"
+                                  onsubmit="return confirm('确认要归档此老人？');">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="btn">归档</button>
+                            </form>
+                            <!-- 删除 -->
+                            <form th:action="@{|/elders/${e.elderId}/delete|}" method="post"
+                                  onsubmit="return confirm('确认要删除此老人？');">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="btn danger">删除</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页条 -->
+            <ul class="pagination">
+                <!-- 上一页 -->
+                <li th:classappend="${pageInfo.hasPreviousPage} ? '' : 'disabled'">
+                    <a href="#"
+                       th:attr="data-page=${pageInfo.prePage}"
+                       class="btn page-link">👈</a>
+                </li>
+                <!-- 中间页码 -->
+                <li th:each="i : ${#numbers.sequence(1, pageInfo.pages)}"
+                    th:classappend="${i == pageInfo.pageNum} ? 'active'">
+                    <a href="#"
+                       th:attr="data-page=${i}"
+                       class="btn page-link"
+                       th:text="${i}">1</a>
+                </li>
+                <!-- 下一页 -->
+                <li th:classappend="${pageInfo.hasNextPage} ? '' : 'disabled'">
+                    <a href="#"
+                       th:attr="data-page=${pageInfo.nextPage}"
+                       class="btn page-link">👉</a>
+                </li>
+            </ul>
+        </div>
+    </section>
+</main>
+
+<div th:insert="~{fragments :: site-footer}"></div>
+
+<!-- AJAX 分页脚本 -->
+<script>
+    document.addEventListener('click', e => {
+        if (e.target.matches('.page-link')) {
+            e.preventDefault();
+            const page = e.target.getAttribute('data-page');
+            fetch(`/elders?pageNum=${page}`, {
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+                .then(r => r.text())
+                .then(html => {
+                    const frag = document.createRange()
+                        .createContextualFragment(html);
+                    const newTbl = frag.querySelector('#elderTable');
+                    document.querySelector('#elderTable')
+                        .replaceWith(newTbl);
+                });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>👴 老人档案详情</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      margin: 0; padding: 0; background: #f9f9f9;
+    }
+    .container {
+      max-width: 800px;
+      margin: 24px auto;
+      background: #fff;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 { margin-top: 0; }
+    .resume-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      row-gap: 8px;
+      column-gap: 16px;
+      margin-bottom: 24px;
+    }
+    .resume-info dt {
+      font-weight: bold;
+      color: #333;
+    }
+    .resume-info dd {
+      margin: 0;
+      color: #555;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background: #f0f8ff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 统一头部 & 导航 -->
+  <div th:insert="fragments :: site-header"></div>
+  <div th:insert="fragments :: site-nav"></div>
+
+  <div class="container">
+    <h1>👴 老人档案详情</h1>
+
+    <!-- 基本档案 -->
+    <section>
+      <h2>📋 基本信息</h2>
+      <dl class="resume-info">
+        <dt>姓名</dt>           <dd th:text="${elder.name}">张三</dd>
+        <dt>性别</dt>           <dd th:text="${elder.gender}">M</dd>
+        <dt>年龄</dt>           <dd th:text="${elder.age}">78</dd>
+        <dt>身份证</dt>         <dd th:text="${elder.idCard}">110101...1234</dd>
+        <dt>联系电话</dt>       <dd th:text="${elder.contact}">1380000xxxx</dd>
+        <dt>地址</dt>           <dd th:text="${elder.address}">北京市朝阳区…</dd>
+        <dt>病史</dt>           <dd th:text="${elder.medicalHistory}">高血压、糖尿病</dd>
+        <dt>过敏史</dt>         <dd th:text="${elder.allergies}">无</dd>
+        <dt>紧急联系人</dt>     <dd th:text="${elder.emergencyContact}">李四 (儿子)：139xxxx</dd>
+        <dt>是否归档</dt>     <dd th:text="${elder.archived} ? '已归档' : '未归档'"></dd>
+      </dl>
+    </section>
+
+    <!-- 健康档案 -->
+    <section>
+      <h2>💉 健康档案</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>血压</th>
+            <th>血糖 (mmol/L)</th>
+            <th>用药记录</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="rec : ${healthRecords}">
+            <td th:text="${#dates.format(rec.recordDate, 'yyyy-MM-dd')}">2025-05-01</td>
+            <td th:text="${rec.bloodPressure}">120/80</td>
+            <td th:text="${rec.bloodSugar}">5.6</td>
+            <td th:text="${rec.medication}">服用降压药</td>
+          </tr>
+          <!-- 如果无记录，可显示一行提示 -->
+          <tr th:if="${#lists.isEmpty(healthRecords)}">
+            <td colspan="4">暂无健康监测记录</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- 统一页尾 -->
+  <div th:insert="fragments :: site-footer"></div>
+
+</body>
+</html>

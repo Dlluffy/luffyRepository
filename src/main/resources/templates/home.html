@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>养老服务管理系统</title>
+    <!-- 1️⃣  GSAP + ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- 2️⃣  Basic Reset & Variables -->
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Hue used for date gradient ‑ will animate 280 → 20 */
+            --hue: 280;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: "Inter", sans-serif;
+            color: #fff;
+            background: #111; /* fallback */
+        }
+
+        /* 3️⃣  Sections -------------------------------------------------- */
+        .section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Hero background image */
+        .hero__bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            will-change: opacity, transform;
+        }
+
+        /* Characters (optional PNG with alpha) */
+        .hero__actors {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            width: 50%;
+            height: 50%;
+            object-fit: contain;
+            object-position: top center;
+            pointer-events: none;
+            will-change: transform;
+            transform: translateX(-50%);
+        }
+
+        /* 4️⃣  Overlay panel (黑紫渐变)  ------------------------------- */
+        .panel {
+            position: absolute;
+            inset: 0;
+            --panel-alpha: 0;
+            background: linear-gradient(
+                    180deg,
+                    rgba(13, 11, 24, var(--panel-alpha)) 0%,
+                    #141021 100%
+            );
+            /*background: linear-gradient(180deg, #0d0b18 0%, #141021 100%);*/
+            clip-path: inset(0 0 100% 0 round 0);
+            z-index: 5;
+            will-change: clip-path;
+        }
+
+        /* 5️⃣  SVG mask / giant letters -------------------------------- */
+        .mask-layer {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #0d0b18 0%, #141021 100%);
+            /* 现代浏览器（新语法，一行就够）*/
+            mask: url(#logo-mask) no-repeat center / contain;
+            mask-type: luminance;
+
+            /* 兼容旧版 WebKit（把 size 拆出来）*/
+            -webkit-mask-image: url(#logo-mask);
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            -webkit-mask-size: contain; /* ⬅️ 把 contain 写到这里 */
+            z-index: 6;
+            will-change: transform, opacity;
+        }
+
+        .logo-white {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 300px; /* 和最终白 Logo 一样大 */
+            transform: translate(-50%, -50%) scale(200);
+            transform-origin: center; /* 缩放以中心为锚点 */
+            opacity: 0;
+            z-index: 7;
+            will-change: transform, opacity;
+        }
+
+        .logo-transparent {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 300px; /* 和最终白 Logo 一样大 */
+            transform: translate(-50%, -50%) scale(200);
+            transform-origin: center; /* 缩放以中心为锚点 */
+            opacity: 1;
+            z-index: 7;
+            will-change: transform, opacity;
+        }
+
+        /* 6️⃣  Small standard logo */
+        .logo-small {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            opacity: 0;
+            z-index: 6;
+        }
+
+        /* 7️⃣  Date text */
+        .date {
+            position: absolute;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-origin: center center; /* 新增：缩放以中心为锚点 */
+            will-change: transform, opacity; /* 新增：性能优化 */
+            font-size: clamp(28px, 8vw, 120px);
+            line-height: 1.1;
+            font-weight: 900;
+            text-align: center;
+            --text-gradient: linear-gradient(
+                    180deg,
+                    hsl(var(--hue) 79% 55%) 0%,
+                    hsl(calc(var(--hue) + 40) 82% 65%) 100%
+            );
+            background: var(--text-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            opacity: 0;
+            z-index: 6;
+        }
+
+        /* 然后给内部的 a 也用同一个渐变，字号调小一些 */
+        .date a {
+            display: inline-block;
+            font-size: clamp(24px, 5vw, 60px);
+            background: var(--text-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-decoration: none; /* 取消下划线 */
+        }
+
+        .date a:hover,
+        .date a:focus {
+            text-decoration: none;
+            color: transparent;
+        }
+
+        /* 8️⃣  Poster VI in background */
+        .vi {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            opacity: 0;
+            z-index: 7;
+        }
+
+        /* 9️⃣  Platform icons */
+        .platforms {
+            position: absolute;
+            bottom: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 48px;
+            opacity: 0;
+            z-index: 9;
+        }
+
+        .platforms img {
+            height: 24px;
+            opacity: 0.8;
+        }
+
+        /* Scroll cue chevron */
+        .chevron {
+            position: absolute;
+            bottom: 2.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
+            z-index: 9;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translate(-50%, 0);
+            }
+            50% {
+                transform: translate(-50%, 8px);
+            }
+        }
+
+        /* CSS：初始左外100%，下外100% */
+        .silhouette1 {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            opacity: 0;
+            width: 40%;
+            height: auto;
+            transform: translate(-100%, 100%);
+            will-change: transform, opacity;
+            z-index: 5;
+        }
+
+        .silhouette2 {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            opacity: 0;
+            width: 35%;
+            height: auto;
+            transform: translate(250%, 100%);
+            will-change: transform, opacity;
+            z-index: 5;
+        }
+
+    </style>
+</head>
+<body>
+<!-- ░░░  HERO / PINNED SECTION  ░░░ -->
+<section class="section hero" id="hero">
+    <img class="hero__bg"
+         src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80"
+         alt="hero background"/>
+    <!-- People illustration → optional PNG with transparency -->
+    <img class="hero__actors"
+         src="/images/bf02f3b1-20eb-40ab-9ac8-a8c6404a1164.png"
+         alt="actors placeholder"/>
+
+    <!-- Black panel overlay -->
+    <div class="panel"></div>
+
+    <!-- Mask layer (giant letters) -->
+    <div class="mask-layer"></div>
+
+    <!-- 白字图，初始化跟透明图同尺寸同位置，放在下层 -->
+    <img class="logo-white" src="/images/0667ee0c-b27e-4e3a-a96c-a0ae755ab017.png" alt="white logo"/>
+
+    <!-- 透明文字，初始超大看不见 -->
+    <img class="logo-transparent" src="/images/d3520f75-1d9f-4f31-88de-3c50db0aeae6.png" alt="transparent logo"/>
+
+
+    <!-- Small logo → fade‑in later -->
+    <!--    <img class="logo-small" src="/images/0667ee0c-b27e-4e3a-a96c-a0ae755ab017.png" alt="logo"/>-->
+
+    <!-- VI art → fade‑in later -->
+    <!--    <img class="vi" src="https://www.rockstargames.com/VI/_next/static/media/VIstack.fe9b0515.svg" alt="VI art"/>-->
+
+    <!-- Date text -->
+    <div class="date">
+        <br>
+        <br/>养老 服务
+        <br/>管理系统
+        <br>
+        <a href="/elders">管理员登录</a>
+        <a href="/family">家属登录</a>
+    </div>
+
+    <img class="silhouette1" src="/images/4549681b-3483-4762-b458-8f6fd015bcd4.png" alt="老人剪影">
+    <img class="silhouette2" src="/images/0cf447d4-b296-49e7-85b3-42e52c6d0f11.png" alt="老人剪影">
+
+    <!-- Platforms -->
+    <!--    <div class="platforms">-->
+    <!--        <img src="https://placehold.co/100x24?text=PS5" alt="PS5"/>-->
+    <!--        <img src="https://placehold.co/160x24?text=Xbox+Series" alt="Xbox Series"/>-->
+    <!--    </div>-->
+
+    <!-- scroll cue -->
+    <img class="chevron" src="https://api.iconify.design/mdi/chevron-down.svg" alt="scroll"/>
+
+    <!-- ⚙️  SVG LOGO MASK definition (hidden) --------------------------- -->
+    <!--    <svg width="0" height="0" style="position:absolute">-->
+    <!--        <defs>-->
+    <!--            <symbol id="logo-symbol" viewBox="0 0 800 600">-->
+    <!--                &lt;!&ndash; Replace with your own outlines (converted text). For demo, use BIG text. &ndash;&gt;-->
+    <!--                <text x="50%" y="40%" font-family="Impact, sans-serif" font-size="300" font-weight="700" fill="#fff"-->
+    <!--                      text-anchor="middle">GRAND-->
+    <!--                </text>-->
+    <!--                <text x="50%" y="75%" font-family="Impact, sans-serif" font-size="300" font-weight="700" fill="#fff"-->
+    <!--                      text-anchor="middle">THEFT-->
+    <!--                </text>-->
+    <!--            </symbol>-->
+    <!--            <mask id="logo-mask" maskUnits="objectBoundingBox">-->
+    <!--                <rect width="100%" height="100%" fill="black"/>-->
+    <!--                <use href="#logo-symbol" fill="white"/>-->
+    <!--            </mask>-->
+    <!--        </defs>-->
+    <!--    </svg>-->
+</section>
+
+<!-- ░░░  DUMMY FOLLOW‑UP SECTION  ░░░ -->
+<!--    <section class="section" style="background:#141021; display:flex; align-items:center; justify-content:center; font-size:48px;">-->
+<!--      <p>More Content …</p>-->
+<!--    </section>-->
+
+<!--  🟢  GSAP Scroll Timeline ------------------------------------- -->
+<script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // timeline pinned to hero section
+    const tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "+=450%",
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+        },
+        defaults: {ease: "none"},
+    });
+
+    /* 1. Panel reveal (clip‑path bottom 100% -> 0) */
+    tl.to(".panel", {
+        clipPath: "inset(0 0 0 0)",
+        "--panel-alpha": 1
+    }, 0);
+
+    /* 2. Center black strip (mask-layer) slides up & scales down */
+    tl.fromTo(
+        ".mask-layer",
+        {transform: "scale(2)", opacity: 1},
+        {transform: "scale(1)", duration: 0.25},
+        0
+    );
+
+    /* 3. Shrink mask to center and then fade */
+    tl.to(
+        ".mask-layer",
+        {transform: "scale(0.18)", duration: 0.35, ease: "power1.inOut"},
+        0.35
+    ).to(
+        ".mask-layer",
+        {opacity: 0, duration: 0.05},
+        0.8
+    );
+
+    /* 4. Background Illustration fades out slightly */
+    tl.to(
+        ".hero__bg",
+        {opacity: 0.35, duration: 0.35},
+        0
+    );
+
+    // JS：随滚动让剪影从左下屏外滑入到左下屏内并渐显
+    tl.fromTo(".silhouette1",
+        {x: "-100%", y: "100%", opacity: 0},
+        {x: "0%", y: "0%", opacity: 0.8, duration: 0.4, ease: "power2.out"},
+        1 // 时间轴触发点，可根据需要微调
+    );
+
+    tl.fromTo(".silhouette2",
+        {x: "250%", y: "100%", opacity: 0},
+        {x: "200%", y: "0%", opacity: 0.8, duration: 0.4, ease: "power2.out"},
+        1 // 时间轴触发点，可根据需要微调
+    );
+
+    /* 5a. Shrink transparent logo from scale(50) → scale(1) */
+    tl.to([".logo-transparent", ".logo-white"],
+        {
+            top: "10%",             // 收口到跟 .logo-small 一样的位置
+            scale: 1,
+            duration: 0.4,
+            ease: "power2.out"
+        },
+        0.7  // 大约在白标出现前一点触发
+    );
+
+    /* 5b. 白标淡入 & 同时透明图淡出 */
+    tl.to(".logo-transparent",
+        {autoAlpha: 0, duration: 0.2},
+        0.9
+    ).to(".logo-white",
+        {autoAlpha: 1, duration: 0.2},
+        0.9
+    ).to(".logo-small",
+        {autoAlpha: 1, duration: 0.3},
+        0.9
+    );
+
+    /* 5. Bring in small logo */
+    tl.to(
+        ".logo-small",
+        {autoAlpha: 1, duration: 0.25},
+        0.7
+    );
+
+    /* 6. Date text fades & hue shift 280 -> 20 */
+    tl.to(
+        "body",
+        {"--hue": 20, duration: 0.3},
+        1.0
+    );
+
+    // 6a. Date text 从大到正常大小
+    tl.fromTo(".date",
+        {scale: 2, autoAlpha: 0},
+        {scale: 1, autoAlpha: 1, duration: 0.4, ease: "power2.out"},
+        1  // 你可以根据需要微调触发时机
+    );
+
+    /* 7. VI artwork fades in + scales */
+    tl.fromTo(
+        ".vi",
+        {autoAlpha: 0, scale: 0.8},
+        {autoAlpha: 1, scale: 1, duration: 0.3},
+        0.9
+    );
+
+    /* 8. Platform icons fade in */
+    tl.to(
+        ".date",
+        {autoAlpha: 1, duration: 0.2},
+        0.8
+    ).to(
+        ".platforms",
+        {autoAlpha: 1, duration: 0.2},
+        1.2
+    );
+
+    /* 9. Optional parallax on actors */
+    gsap.to(".hero__actors", {
+        y: -80,
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "+=100%",
+            scrub: 1,
+        },
+    });
+</script>
+</body>
+</html>

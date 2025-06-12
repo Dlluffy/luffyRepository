@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>🔔 服务预约管理</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <style>
+        .action-buttons {
+            display: inline-flex;
+            gap: 0.5rem;
+        }
+
+        .action-buttons form {
+            margin: 0;
+        }
+
+        .col-actions {
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        .btn, .page-link {
+            text-decoration: none;
+        }
+
+        .pagination {
+            list-style: none;
+            margin: 1rem 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .pagination li {
+            margin: 0;
+        }
+
+        .pagination li.disabled .btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .pagination li.active .btn {
+            background: #357ABD;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 页头 + 导航 -->
+<div th:insert="~{fragments :: site-header}"></div>
+<div th:insert="~{fragments :: site-nav}"></div>
+
+<main class="container">
+
+    <!-- 新增预约 -->
+    <section class="card">
+        <h2>➕ 新增服务预约</h2>
+        <form th:action="@{/appointments}" th:object="${newAppt}" method="post" class="form">
+            <div class="form-group">
+                <label>老人
+                    <select th:field="*{elderId}" required>
+                        <option value="" disabled selected>请选择老人</option>
+                        <option th:each="e : ${elders}"
+                                th:value="${e.elderId}"
+                                th:text="${e.name}">张三
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>家属用户
+                    <select th:field="*{userId}">
+                        <option value="" disabled selected>请选择家属</option>
+                        <option th:each="u : ${users}"
+                                th:value="${u.userId}"
+                                th:text="${u.name}">李四
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>服务类型
+                    <select th:field="*{serviceType}">
+                        <option value="" disabled selected>请选择服务</option>
+                        <option value="上门护理">上门护理</option>
+                        <option value="康复训练">康复训练</option>
+                    </select>
+                </label>
+            </div>
+            <!-- 金额（整数，单位：元） -->
+            <div class="form-group">
+                <label>金额（可留空，支持两位小数）
+                    <input type="number"
+                           name="fee"
+                           step="0.01"
+                    min="0"
+                    placeholder="例如 200.00"/>
+                </label>
+            </div>
+
+
+            <div class="form-group">
+                <label>预约时间
+                    <!-- 改为日期+时间 -->
+                    <input type="datetime-local" th:field="*{appointmentTime}" required/>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>探访原因
+                    <input type="text" th:field="*{reason}" placeholder="如：日常探视"/>
+                </label>
+            </div>
+            <button class="btn primary" type="submit">保存</button>
+        </form>
+    </section>
+
+    <!-- 预约列表 -->
+    <section class="card">
+        <h2>📋 预约列表</h2>
+        <div id="apptTable" th:fragment="apptTable">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>预约ID</th>
+                    <th>老人ID</th>
+                    <th>家属用户ID</th>
+                    <th>服务类型</th>
+                    <th>预约时间</th>
+                    <th>探访原因</th>
+                    <th>状态</th>
+                    <th>账单ID</th>
+                    <th>创建时间</th>
+                    <th>更新时间</th>
+                    <th class="col-actions">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="a : ${appointments}">
+                    <td th:text="${a.appointmentId}">1</td>
+                    <td th:text="${a.elderId}">101</td>
+                    <td th:text="${a.userId}">501</td>
+                    <td th:text="${a.serviceType}">上门护理</td>
+                    <!-- 展示完整日期+时间 -->
+                    <td th:text="${#temporals.format(a.appointmentTime,'yyyy-MM-dd HH:mm')}">
+                        2025-05-30 10:24
+                    </td>
+                    <td th:text="${a.reason}">日常探视</td>
+                    <td th:text="${a.status}">未支付</td>
+                    <td th:text="${a.billId != null ? a.billId : '—'}">—</td>
+                    <td th:text="${#dates.format(a.createdAt,'yyyy-MM-dd HH:mm')}">
+                        2025-05-26 09:00
+                    </td>
+                    <td th:text="${#dates.format(a.updatedAt,'yyyy-MM-dd HH:mm')}">
+                        2025-05-26 10:00
+                    </td>
+                    <td class="col-actions">
+                        <div class="action-buttons">
+                            <!-- 取消预约 -->
+                            <form th:if="${a.status != '已取消'}"
+                                  th:action="@{|/appointments/${a.appointmentId}/cancel|}"
+                                  method="post"
+                                  onsubmit="return confirm('确认要取消此预约？');">
+                                <button type="submit" class="btn">取消</button>
+                            </form>
+                            <!-- 支付 -->
+                            <form th:if="${a.status == '未支付'}"
+                                  th:action="@{|/appointments/${a.appointmentId}/pay|}"
+                                  method="post"
+                                  onsubmit="return confirm('确认要支付？');">
+                                <button type="submit" class="btn primary">支付</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页 -->
+            <ul class="pagination">
+                <li th:classappend="${pageInfo.hasPreviousPage} ? '' : 'disabled'">
+                    <a href="#"
+                       th:attr="data-page=${pageInfo.prePage}"
+                       class="btn page-link">«</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(1, pageInfo.pages)}"
+                    th:classappend="${i == pageInfo.pageNum} ? 'active'">
+                    <a href="#"
+                       th:attr="data-page=${i}"
+                       class="btn page-link"
+                       th:text="${i}">1</a>
+                </li>
+                <li th:classappend="${pageInfo.hasNextPage} ? '' : 'disabled'">
+                    <a href="#"
+                       th:attr="data-page=${pageInfo.nextPage}"
+                       class="btn page-link">»</a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+<div th:insert="~{fragments :: site-footer}"></div>
+
+<!-- AJAX 分页脚本 -->
+<script>
+    document.addEventListener('click', e => {
+        if (e.target.matches('.page-link')) {
+            e.preventDefault();
+            const page = e.target.getAttribute('data-page');
+            fetch(`/appointments?pageNum=${page}`, {
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+                .then(r => r.text())
+                .then(html => {
+                    const frag = document.createRange().createContextualFragment(html);
+                    const newTbl = frag.querySelector('#apptTable');
+                    document.querySelector('#apptTable').replaceWith(newTbl);
+                });
+        }
+    });
+</script>
+
+</body>
+</html>

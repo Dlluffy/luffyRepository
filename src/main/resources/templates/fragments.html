@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <!-- ======= 头部 ======= -->
+  <header th:fragment="site-header" style="padding:16px; background:#f0f8ff;">
+    <h1 style="margin:0;">🏥 养老服务管理系统 👴</h1>
+  </header>
+
+  <!-- ======= 导航 ======= -->
+  <nav th:fragment="site-nav" style="background:#e6f7ff; padding:8px;margin-bottom: 24px;">
+    <ul style="list-style:none; margin:0; padding:0; display:flex; gap:12px;">
+      <li><a th:href="@{/}"              style="text-decoration:none;">🏠 首页</a></li>
+      <li><a th:href="@{/elders}"        style="text-decoration:none;">👴 老人管理</a></li>
+      <li><a th:href="@{/care-plans}"    style="text-decoration:none;">📝 护理计划</a></li>
+      <li><a th:href="@{/appointments}"  style="text-decoration:none;">📅 服务预约</a></li>
+      <li><a th:href="@{/billing}"       style="text-decoration:none;">💰 账单管理</a></li>
+      <li><a th:href="@{/healthRecords}" style="text-decoration:none;">💊 健康监测</a></li>
+    </ul>
+  </nav>
+
+  <!-- ======= 页尾 ======= -->
+  <footer th:fragment="site-footer" style="text-align:center; padding:12px; background:#f0f8ff; margin-top:24px;">
+    <small>© 2025 养老服务管理系统 版权所有 🏅</small>
+  </footer>
+</body>
+</html>

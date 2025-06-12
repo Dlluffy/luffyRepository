@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>📝 护理计划管理</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<style>
+    .action-buttons {
+        display: inline-flex;
+        gap: 0.5rem; /* 按钮之间 8px 间距 */
+    }
+
+    .action-buttons form {
+        margin: 0; /* 去掉默认的上下 margin */
+    }
+
+    .col-actions {
+        white-space: nowrap;
+        width: 1%;
+    }
+
+    /* 去掉所有 .btn/.page-link 的下划线 */
+    .btn,
+    .page-link {
+        text-decoration: none;
+    }
+
+    /* 取消 ul 默认的圆点、内外边距，改成 flex 布局 */
+    .pagination {
+        list-style: none; /* 去掉小圆点 */
+        margin: 1rem 0; /* 你可以根据需要自己调上下间距 */
+        padding: 0;
+        display: flex; /* 横向排列子元素 */
+        justify-content: flex-end; /* 靠右对齐 */
+        gap: 0.5rem; /* 按钮之间间隔 8px */
+    }
+
+    /* li 本身不用额外间距，重置默认 */
+    .pagination li {
+        margin: 0;
+    }
+
+    /* disabled 状态按钮样式（可选） */
+    .pagination li.disabled .btn {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    /* active 状态按钮样式（可选，和 .btn.primary 一致即可）*/
+    .pagination li.active .btn {
+        background: #357ABD;
+        color: #fff;
+    }
+
+</style>
+<body>
+<!-- 页头 + 导航 -->
+<div th:insert="fragments :: header"></div>
+<div th:insert="fragments :: nav"></div>
+
+<!-- 主体 -->
+<main class="container">
+    <section class="card">
+        <h2>💼 护理计划列表</h2>
+        <!-- 新增：包裹表格+分页 -->
+        <div id="planTable" th:fragment="planTable">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>护理计划ID</th>
+                    <th>老人ID</th>
+                    <th>老人姓名</th>
+                    <th>等级</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th class="col-actions">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${plans}">
+                    <td th:text="${p.planId}">1</td>
+                    <td th:text="${p.elderId}">101</td>
+                    <td th:text="${elderNames[p.elderId]}">刘老先生</td>
+                    <td th:text="${p.level}">全护</td>
+                    <td th:text="${p.status}">启用</td>
+                    <td th:text="${#dates.format(p.createdAt,'yyyy-MM-dd HH:mm')}">2025-05-07 09:00</td>
+                    <td class="col-actions">
+                        <div class="action-buttons">
+                            <form th:action="@{|/care-plans/${p.planId}/tasks|}" method="GET">
+                                <button type="submit" class="btn">查看</button>
+                            </form>
+                            <!-- 归档 -->
+
+                            <form th:action="@{|/care-plans/${p.planId}/archive|}" method="post"
+                                  onsubmit="return confirm('确认要归档此护理计划？');">
+                                <button type="submit" class="btn">归档</button>
+                            </form>
+
+                            <!-- 删除 -->
+
+                            <form th:action="@{|/care-plans/${p.planId}/delete|}" method="post"
+                                  onsubmit="return confirm('确认要删除此护理计划？');">
+                                <button type="submit" class="btn danger">删除</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页条，也放进同一个容器里 -->
+            <div>
+                <ul class="pagination">
+                    <!-- 上一页 -->
+                    <li th:classappend="${pageInfo.hasPreviousPage} ? '' : 'disabled'">
+                        <a
+                                href="#"
+                                th:attr="data-page=${pageInfo.prePage}"
+                                class="btn page-link">👈</a>
+                    </li>
+                    <!-- 中间页码 -->
+                    <li th:each="i : ${#numbers.sequence(1, pageInfo.pages)}"
+                        th:classappend="${i == pageInfo.pageNum} ? 'active'">
+                        <a
+                                href="#"
+                                th:attr="data-page=${i}"
+                                class="btn page-link"
+                                th:text="${i}">1</a>
+                    </li>
+                    <!-- 下一页 -->
+                    <li th:classappend="${pageInfo.hasNextPage} ? '' : 'disabled'">
+                        <a
+                                href="#"
+                                th:attr="data-page=${pageInfo.nextPage}"
+                                class="btn page-link">👉</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>➕ 新建护理计划</h2>
+        <form th:action="@{/care-plans}" th:object="${plan}" method="post" class="form">
+            <div class="form-group">
+                <label>老人
+                    <select th:field="*{elderId}" required>
+                        <option value="" disabled selected>请选择老人</option>
+                        <option th:each="e : ${elders}"
+                                th:value="${e.elderId}"
+                                th:text="${e.name}">
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>等级
+                    <select th:field="*{level}" required>
+                        <option value="全护">全护</option>
+                        <option value="半护">半护</option>
+                        <option value="自理">自理</option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>任务说明 <input type="text" th:field="*{task}" required/></label>
+            </div>
+            <button class="btn primary" type="submit">保存</button>
+        </form>
+    </section>
+</main>
+
+<!-- 页脚 -->
+<div th:insert="fragments :: footer"></div>
+
+<script>
+    document.addEventListener('click', e => {
+        if (e.target.matches('.page-link')) {
+            e.preventDefault();
+            const page = e.target.getAttribute('data-page');
+            fetch(`/care-plans?pageNum=${page}`, {
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+                .then(res => res.text())
+                .then(html => {
+                    const frag = document.createRange()
+                        .createContextualFragment(html);
+                    const newTable = frag.querySelector('#planTable');
+                    document.querySelector('#planTable')
+                        .replaceWith(newTable);
+                });
+        }
+    });
+
+</script>
+
+</body>
+</html>

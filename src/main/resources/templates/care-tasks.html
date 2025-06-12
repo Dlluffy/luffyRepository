@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${plan.status == '启用'} ? '✅ 执行任务' : '❎ 执行任务'">
+        执行任务
+    </title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<!-- 页头 + 导航 -->
+<div th:insert="fragments :: header"></div>
+<div th:insert="fragments :: nav"></div>
+
+<!-- 主体 -->
+<main class="container">
+    <section class="card">
+        <h2>📋 护理计划 #[[${plan.planId}]] 任务列表</h2>
+        <p>
+            老人ID：<strong th:text="${plan.elderId}">101</strong> ｜
+            姓名：<strong th:text="${elder.getName()}">刘老太太</strong> ｜
+            级别：<strong th:text="${plan.level}">全护</strong> ｜
+            病史：<strong th:text="${elder.getMedicalHistory()}">全护</strong> ｜
+            过敏史：<strong th:text="${elder.allergies}">全护</strong> ｜
+            <strong th:text="${elder.archived} ? '已归档' : '未归档'">全护</strong> ｜
+            <strong><a th:href="@{'/elders/' + ${elder.elderId}}">老人详情</a></strong>
+        </p>
+        <p>任务说明：<strong th:text="${plan.getTask()}"></strong></p>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>护理员ID</th>
+                <th>护理说明</th>
+                <th>执行时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${records}">
+                <td th:text="${r.nurseId}">201</td>
+                <td th:text="${r.taskDetail}">上午喂药</td>
+                <td th:text="${#dates.format(r.executedAt,'yyyy-MM-dd HH:mm')}">2025-05-07 09:15</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(records)}">
+                <td colspan="3" class="empty">暂无记录</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="card">
+        <h2 th:text="${plan.status == '启用'} ? '✅ 标记新完成任务' : '❎ 计划已停用'"></h2>
+        <form
+                th:action="@{|/care-plans/${plan.planId}/tasks|}"
+                th:object="${newRec}"
+                method="post"
+                class="form">
+
+            <!-- 护理任务原有字段 -->
+            <div class="form-group">
+                <label>护理员
+                    <select th:field="*{nurseId}" required>
+                        <option value="" disabled selected>请选择护理员</option>
+                        <option th:each="n : ${nurses}"
+                                th:value="${n.staffId}"
+                                th:text="${n.name}">
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>护理说明 <input type="text" th:field="*{taskDetail}"/></label>
+            </div>
+
+            <!-- 新增：健康档案可选字段 -->
+            <div class="form-group">
+                <label>血压 <input type="text" name="bloodPressure" placeholder="如 120/80"/></label>
+            </div>
+            <div class="form-group">
+                <label>血糖 (mmol/L) <input type="number" step="0.01" name="bloodSugar"/></label>
+            </div>
+            <div class="form-group">
+                <label>用药记录 <input type="text" name="medication"/></label>
+            </div>
+            <div class="form-group">
+                <label>记录日期 <input type="date" name="recordDate"/></label>
+            </div>
+
+            <button class="btn primary" type="submit">完成✔️</button>
+        </form>
+    </section>
+
+</main>
+
+<!-- 页脚 -->
+<div th:insert="fragments :: footer"></div>
+</body>
+</html>

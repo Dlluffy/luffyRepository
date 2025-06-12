@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家属端 - 养老管理系统</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #f5f7fa;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease-in-out;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .navbar-brand {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: 0.5px;
+      transition: color 0.3s;
+    }
+
+    .navbar-brand:hover {
+      color: #111;
+      cursor: default;
+    }
+
+    .navbar-nav .nav-link {
+      padding: 12px 20px;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #333;
+      border-radius: 12px;
+      transition: background-color 0.3s, color 0.3s, transform 0.2s ease;
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      background-color: #e6f0ff;
+      color: #007aff;
+      transform: translateY(-1px);
+    }
+
+    .logout-link {
+      color: #e63946;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 12px;
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s;
+    }
+
+    .logout-link:hover {
+      background-color: #ffcccc;
+      color: #b71c1c;
+      transform: translateY(-1px);
+      cursor: pointer;
+    }
+
+    .container {
+      padding-top: 90px;
+    }
+
+    .footer {
+      background: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      color: #777;
+      font-size: 0.9rem;
+      border-top: 1px solid #ddd;
+      margin-top: 60px;
+    }
+  </style>
+
+</head>
+<body>
+<div th:fragment="navbar">
+  <nav class="navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="/family-dashboard">养老管理系统</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/to-familyCareTask">每日护理记录</a></li>
+        <li class="nav-item"><a class="nav-link" href="/family/health">健康数据</a></li>
+        <li class="nav-item"><a class="nav-link" href="/to-familyVisit">探访预约</a></li>
+        <li class="nav-item"><a class="nav-link" href="/to-familyBill">线上缴费</a></li>
+        <li class="nav-item"><a class="nav-link" href="/family-personalPage">个人信息</a></li>
+        <li class="nav-item"><a class="logout-link nav-link" href="/family-logout">登出</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+</div>
+<div th:fragment="navbar2">
+  <div class="quick-widget">
+    <a href="/family-dashboard" class="widget-btn text-dark">
+      <i class="fas fa-home"></i><span>主页</span>
+    </a>
+    <a href="/to-familyVisit" class="widget-btn text-primary">
+      <i class="fas fa-calendar-check"></i><span>预约探视</span>
+    </a>
+    <a href="/to-familyBill" class="widget-btn text-success">
+      <i class="fas fa-yen-sign"></i><span>在线缴费</span>
+    </a>
+    <a href="/family/health" class="widget-btn text-secondary">
+      <i class="fas fa-notes-medical"></i><span>健康记录</span>
+    </a>
+    <a href="/to-familyCareTask" class="widget-btn text-info">
+      <i class="fas fa-hand-holding-heart"></i><span>护理记录</span>
+    </a>
+    <a href="/family-personalPage" class="widget-btn text-warning">
+      <i class="fas fa-user-circle"></i><span>个人信息</span>
+    </a>
+    <a href="/family-logout" class="widget-btn text-danger">
+      <i class="fas fa-sign-out-alt"></i><span>登出</span>
+    </a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- 页面主体内容 -->
+</div>
+
+<footer class="footer">
+  &copy; 2025 养老管理系统
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

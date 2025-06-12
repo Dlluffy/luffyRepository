@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>健康数据记录 - 家属端</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/family-menu.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #f0f4f7);
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin-top: 40px;
+    }
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #2c3e50;
+    }
+    .card {
+      border-left: 6px solid #0d6efd;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    .card-body {
+      padding: 20px;
+    }
+    .record-date {
+      font-size: 0.95rem;
+      color: #6c757d;
+      margin-bottom: 5px;
+    }
+    .record-item {
+      font-size: 1.1rem;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+    .record-item i {
+      margin-right: 8px;
+      color: #0d6efd;
+    }
+    .record-medication {
+      font-size: 1rem;
+      font-style: italic;
+      color: #495057;
+      margin-top: 5px;
+    }
+    p.no-records {
+      text-align: center;
+      color: #999;
+      margin-top: 60px;
+      font-size: 1.1rem;
+    }
+    .pagination {
+      justify-content: center;
+      margin-top: 30px;
+    }
+  </style>
+  <style>
+    .quick-widget {
+      position: fixed;
+      right: 20px;
+      top: 40%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .widget-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+
+    .widget-btn:hover {
+      transform: translateX(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      background-color: #f9f9f9;
+    }
+
+    .widget-btn i {
+      font-size: 16px;
+    }
+
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+</head>
+<body>
+<!--<div th:replace="~{family-menu :: navbar}"></div>-->
+<div th:replace="~{family-menu :: navbar2}"></div>
+<div class="container">
+  <h1>健康数据记录</h1>
+
+  <div id="healthRecordsList">
+    <div th:if="${#lists.isEmpty(healthRecords)}">
+      <p class="no-records">暂无健康数据</p>
+    </div>
+
+    <div th:each="record, stat : ${healthRecords}" class="card">
+      <div class="card-body">
+        <div class="record-date">
+          <strong th:text="'记录 #' + ${stat.index + 1}"></strong> -
+          <span th:text="${#dates.format(record.recordDate, 'yyyy-MM-dd HH:mm')}">2025-05-21 08:00</span>
+        </div>
+        <div class="record-item">
+          <i class="fas fa-heartbeat"></i>
+          <span th:text="'血压：' + ${record.bloodPressure}">血压：120/80 mmHg</span>
+        </div>
+        <div class="record-item">
+          <i class="fas fa-tint"></i>
+          <span th:text="'血糖：' + ${record.bloodSugar} + ' mmol/L'">血糖：5.6 mmol/L</span>
+        </div>
+        <div class="record-medication" th:if="${record.medication != null}">
+          <i class="fas fa-pills"></i>
+          <span th:text="'用药情况：' + ${record.medication}">用药情况：阿司匹林</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分页导航 -->
+  <nav th:if="${totalPages > 1}">
+    <ul class="pagination">
+      <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{/family/health(page=${currentPage - 1})}">上一页</a>
+      </li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+          th:classappend="${i == currentPage} ? 'active'">
+        <a class="page-link" th:href="@{/family/health(page=${i})}" th:text="${i + 1}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+        <a class="page-link" th:href="@{/family/health(page=${currentPage + 1})}">下一页</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+</body>
+</html>

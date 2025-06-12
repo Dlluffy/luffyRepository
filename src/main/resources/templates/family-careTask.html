@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>每日护理记录 - 家属端</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/family-menu.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Quicksand', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(to right, #e3f2fd, #f0f4f7);
+            padding-bottom: 50px;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 2rem;
+            color: #2c3e50;
+            text-align: center;
+            margin: 50px 0 30px;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-body {
+            padding: 25px 30px;
+        }
+
+        .record-time {
+            font-size: 0.95rem;
+            color: #546e7a;
+            margin-bottom: 10px;
+        }
+
+        .record-content {
+            font-size: 1.1rem;
+            color: #263238;
+            margin: 10px 0 15px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .record-person {
+            font-size: 0.9rem;
+            color: #78909c;
+            font-style: italic;
+        }
+
+        p.no-records {
+            text-align: center;
+            color: #b0bec5;
+            font-size: 1.2rem;
+            margin-top: 60px;
+        }
+
+        .section-divider {
+            width: 80px;
+            height: 4px;
+            background-color: #4fc3f7;
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部菜单 -->
+<!--<div th:replace="~{family-menu :: navbar}"></div>-->
+<div th:replace="~{family-menu :: navbar2}"></div>
+
+<div class="container">
+    <div th:if="${#lists.isEmpty(careTaskRecords)}">
+        <p class="no-records">😔 暂无护理记录</p>
+    </div>
+
+    <!-- 护理计划 -->
+    <h1>当前护理计划</h1>
+    <div class="section-divider"></div>
+    <div class="glass-card">
+        <div class="card-body">
+            <p class="mb-2" th:if="${taskMap['morning']}">
+                🕗 上午任务：<span th:text="${taskMap['morning']}">--</span>
+            </p>
+            <p class="mb-2" th:if="${taskMap['afternoon']}">
+                🕑 下午任务：<span th:text="${taskMap['afternoon']}">--</span>
+            </p>
+            <p class="mb-2" th:if="${taskMap['evening']}">
+                🌙 晚上任务：<span th:text="${taskMap['evening']}">--</span>
+            </p>
+
+            <p class="mb-2" th:text="'🩺 护理水平：' + ${carePlan.level}">🩺 护理水平：基础护理</p>
+            <p class="mb-2" th:text="'🚦 是否开启：' + ${carePlan.status}">🚦 是否开启：是</p>
+            <p class="mb-2" th:text="'⏰ 开始时间：' + ${carePlan.createdAt}">⏰ 开始时间：2025-05-01</p>
+        </div>
+    </div>
+
+    <!-- 每日护理记录 -->
+    <h1>每日护理记录</h1>
+    <div class="section-divider"></div>
+
+    <div id="recordsList">
+        <!-- 无记录提示 -->
+        <div th:if="${#lists.isEmpty(careTaskRecords)}">
+            <p class="no-records">😔 暂无护理记录</p>
+        </div>
+
+        <!-- 护理记录列表 -->
+        <div th:each="record : ${careTaskRecords}" class="glass-card" tabindex="0"
+             th:attr="aria-label='护理记录，时间：' + ${record.executedAt}">
+            <div class="card-body">
+                <div class="record-time" th:text="'🕒 ' + ${record.executedAt}">🕒 2025-05-21 08:30</div>
+                <div class="record-content" th:text="${record.taskDetail}">为老人洗漱、更换床单、喂早餐。</div>
+                <div class="record-person" th:text="'👩‍⚕️ 护理人员: ' + ${record.nurseId}">👩‍⚕️ 护理人员: 张护士</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>家属端主页 - 养老管理系统</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #f0f4f7);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .carousel-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .carousel-photo {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .photo-title {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .photo-subtitle {
+      text-align: center;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      color: #777;
+    }
+    .quick-widget {
+      position: fixed;
+      right: 20px;
+      top: 40%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .widget-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+
+    .widget-btn:hover {
+      transform: translateX(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      background-color: #f9f9f9;
+    }
+
+    .widget-btn i {
+      font-size: 16px;
+    }
+    .hero-container {
+      position: relative;
+    }
+
+    .system-notice {
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      z-index: 2;
+      opacity: 0.95;
+    }
+    .hero-container {
+      position: relative;
+    }
+
+    .system-notice-wrapper {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      z-index: 10;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 8px;
+      padding: 5px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .system-notice-content {
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: scroll-left 25s linear infinite;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #0c5460;
+    }
+
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+  </style>
+  <style>
+    .section-header {
+      padding-bottom: 1.5rem;
+    }
+
+    .section-icon {
+      animation: bounce 2s infinite;
+    }
+
+    .article-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .article-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .article-card .card-title {
+      transition: color 0.3s ease;
+    }
+
+    .article-card:hover .card-title {
+      color: #0d6efd !important;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-15px);}
+      60% {transform: translateY(-7px);}
+    }
+  </style>
+  <style>
+    .photo-icon {
+      font-size: 2.5rem; /* 图标大小 */
+      color: #0d6efd; /* 图标颜色 */
+    }
+
+    .photo-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .photo-subtitle {
+      font-size: 1rem;
+      color: #6c757d;
+      margin-top: 5px;
+    }
+
+    /* 浮动动画效果 */
+    .animate-camera {
+      animation: float 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes float {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-15px);}
+      60% {transform: translateY(-7px);}
+    }
+  </style>
+
+  <link rel="stylesheet" href="/css/family-menu.css">
+</head>
+<body>
+<!-- 导航栏（Thymeleaf 占位） -->
+<!--<div th:replace="~{family-menu :: navbar}"></div>-->
+<div th:replace="~{family-menu :: navbar2}"></div>
+<div class="hero-container">
+  <img src="/images/elder3.png" alt="大照片" class="hero-photo w-100" />
+  <div class="system-notice-wrapper">
+    <div class="system-notice-content">
+      📢 <strong>系统通知：</strong> 本周六将举办老人集体生日会，欢迎家属报名参与！
+    </div>
+  </div>
+</div>
+
+
+
+<div class="container mt-4">
+
+  <div class="glass-card p-4 mb-4">
+    <h5 class="mb-3">👴 老人状态总览</h5>
+    <p>姓名：<span th:text="${elder.name}"></span>（<span th:text="${elder.age}"></span>岁）</p>
+
+    <div th:if="${#lists.isEmpty(healthRecordsNew) == false}">
+      <p>
+        血糖：<span th:text="${healthRecordsNew.bloodSugar}">76</span> bpm
+        血压：<span th:text="${healthRecordsNew.bloodPressure}">120/80</span> mmHg
+      </p>
+      <p class="text-muted">
+        <small>
+          上一次更新：<span th:text="${#dates.format(healthRecordsNew.recordDate, 'MM月dd日')}"></span>
+        </small>
+      </p>
+
+    </div>
+
+    <div th:if="${#lists.isEmpty(healthRecordsNew)}">
+      <p>暂无健康数据记录</p>
+    </div>
+  </div>
+
+  <!-- 图表部分 -->
+  <div class="glass-card p-4 mb-5">
+    <h5><i class="fas fa-heartbeat"></i> 健康数据可视</h5>
+    <canvas id="healthDataChart" height="100"></canvas>
+  </div>
+
+  <!-- 生活照片墙 -->
+  <!-- 标题说明 -->
+  <div class="carousel-container text-center">
+    <div class="d-flex flex-column align-items-center">
+      <!-- 相机图标 -->
+      <div class="photo-icon mb-2">
+        <i class="fas fa-camera-retro animate-camera"></i>
+      </div>
+      <!-- 标题 -->
+      <div class="photo-title">
+        老人近期生活照
+      </div>
+      <!-- 副标题 -->
+      <div class="photo-subtitle">
+        展示老人日常生活中的温馨瞬间，记录每一个美好时刻
+      </div>
+    </div>
+  </div>
+
+  <!-- 幻灯片组件 -->
+  <div id="dualPhotoCarousel" class="carousel slide carousel-container mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <!-- 第一组 -->
+      <div class="carousel-item active" th:if="${elderPhotos.size() > 1}">
+        <div class="row">
+          <div class="col-6">
+            <img th:src="${elderPhotos[0].photoPath}" class="carousel-photo" alt="图1" />
+          </div>
+          <div class="col-6">
+            <img th:src="${elderPhotos[1].photoPath}" class="carousel-photo" alt="图2" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 后续组：左边为上一张，右边新图 -->
+      <div class="carousel-item" th:each="photo, stat : ${elderPhotos}" th:if="${stat.index >= 2}">
+        <div class="row">
+          <div class="col-6">
+            <img th:src="${elderPhotos[stat.index - 1].photoPath}" class="carousel-photo" alt="左图" />
+          </div>
+          <div class="col-6">
+            <img th:src="${photo.photoPath}" class="carousel-photo" alt="右图" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#dualPhotoCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#dualPhotoCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+  <section class="article-section py-5">
+    <div class="container">
+      <!-- 改进后的标题部分 -->
+      <div class="section-header text-center mb-5 position-relative">
+        <div class="section-icon mb-3">
+          <i class="fas fa-book-open fa-3x text-primary"></i>
+        </div>
+        <h2 class="display-5 fw-bold mb-3">
+                <span class="position-relative">
+                    精选文章推荐
+                    <span class="position-absolute bottom-0 start-0 end-0 mx-auto" style="height: 3px; width: 80px; background: linear-gradient(90deg, #0d6efd, #6f42c1);"></span>
+                </span>
+        </h2>
+        <p class="lead text-muted">专业护理知识与实用养老指南</p>
+      </div>
+
+      <div class="row g-4">
+        <!-- 文章卡片（共12个，复制下面这段改内容） -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy9-OZBxQmtNsw8aQICK1kTe6HIWZc3btHIA&s'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">健康养老：让爱延续到老年生活的每一天</h5>
+              <p class="card-text text-muted">了解如何与长者建立信任，改善日常互动体验。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmZ2HaKvAQHyfMLNIKsZopUdTQwkh7ESDRvg&s'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">照护中的共情与沟通技巧</h5>
+              <p class="card-text text-muted">学习如何理解长者需求，建立有效沟通桥梁。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://paper.people.com.cn/rmrbhwb/images/1/20210805/1628101167074_1.jpg'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">老年营养膳食指南</h5>
+              <p class="card-text text-muted">科学搭配营养，为长者提供健康饮食方案。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1QM8piiqD7m4LnthhBx7IxLqNEBH0lwgXEQ&s'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">居家养老环境改造</h5>
+              <p class="card-text text-muted">打造安全舒适的居家养老环境实用技巧。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEzm_xusj53swOkqmgar5yFwbRX1WjxK1Sng&s'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">老年心理健康关怀</h5>
+              <p class="card-text text-muted">关注长者心理健康，预防老年抑郁。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS72iwhop_zfjXNXXPM3E-rCkxlw-p-B4CgDQ&s'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">老年常见疾病预防</h5>
+              <p class="card-text text-muted">认识老年常见疾病及预防措施。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://imgs.699pic.com/images/402/568/908.jpg!list1x.v2'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">康复护理实用技巧</h5>
+              <p class="card-text text-muted">术后及疾病康复期的专业护理方法。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <a href="/articles/article1.html" class="article-card card h-100 border-0 shadow-sm text-decoration-none" target="_blank">
+            <div class="article-image card-img-top" style="height: 180px; background-image: url('https://imgs.699pic.com/images/401/766/045.jpg!list1x.v2'); background-size: cover; background-position: center;"></div>
+            <div class="article-content card-body">
+              <h5 class="card-title text-dark">老年活动设计指南</h5>
+              <p class="card-text text-muted">丰富长者生活的趣味活动设计方案。</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <small class="text-primary">阅读更多 <i class="fas fa-arrow-right ms-1"></i></small>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</div>
+
+<!-- 返回顶部按钮 -->
+<button id="backToTopBtn" class="btn btn-primary rounded-circle" style="position: fixed; bottom: 40px; right: 40px; display: none; z-index: 999;">
+  <i class="fas fa-arrow-up"></i>
+</button>
+<button id="chatToggleBtn" class="btn btn-success rounded-circle" style="position: fixed; bottom: 100px; right: 40px; z-index: 1000;">
+  <i class="fas fa-robot"></i>
+</button>
+
+<!-- 聊天弹出框 -->
+<div id="chatBox" class="glass-card p-3" style="position: fixed; bottom: 160px; right: 40px; width: 300px; max-height: 400px; display: none; z-index: 1000; overflow-y: auto;">
+  <div class="mb-2">
+    <strong><i class="fas fa-comment-dots me-1"></i>Ai健康助手</strong>
+  </div>
+  <div id="chatMessages" style="height: 220px; overflow-y: auto; font-size: 0.9rem; background: #f9f9f9; padding: 8px; border-radius: 6px; margin-bottom: 10px;"></div>
+  <div class="input-group">
+    <input type="text" id="chatInput" class="form-control" placeholder="输入内容..." />
+    <button class="btn btn-primary" onclick="sendChat()">发送</button>
+  </div>
+</div>
+
+
+<footer>
+  &copy; 2025 养老管理系统 | 家属端主页
+</footer>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  const labels = [[${chartLabels}]];
+  const bloodPressureData = [[${chartBloodPressure}]];
+  const bloodSugarData = [[${chartBloodSugar}]];
+  /*]]>*/
+</script>
+
+<script>
+  const ctx = document.getElementById('healthDataChart').getContext('2d');
+  const healthDataChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '收缩压 (mmHg)',
+          data: bloodPressureData,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          tension: 0.3,
+          fill: false,
+          yAxisID: 'y',
+        },
+        {
+          label: '血糖 (mmol/L)',
+          data: bloodSugarData,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          tension: 0.3,
+          fill: false,
+          yAxisID: 'y1',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' }
+      },
+      scales: {
+        y: {
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: '收缩压 (mmHg)'
+          },
+          beginAtZero: false
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          title: {
+            display: true,
+            text: '血糖 (mmol/L)'
+          },
+          beginAtZero: false,
+          grid: {
+            drawOnChartArea: false,
+          }
+        }
+      }
+    }
+  });
+</script>
+
+
+
+<script>
+  // 显示/隐藏按钮逻辑
+  window.addEventListener("scroll", function () {
+    const btn = document.getElementById("backToTopBtn");
+    if (document.documentElement.scrollTop > 200) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  });
+
+  // 平滑返回顶部
+  document.getElementById("backToTopBtn").addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+
+
+<!-- 你之前的按钮和聊天框保持不变 -->
+
+<script>
+  document.getElementById('chatToggleBtn').addEventListener('click', () => {
+    const chatBox = document.getElementById('chatBox');
+    if (chatBox.style.display === 'none' || chatBox.style.display === '') {
+      chatBox.style.display = 'block';
+
+      // 打开时如果历史消息为空，加入欢迎语
+      if (chatHistory.length === 0) {
+        chatHistory.push({ role: 'assistant', content: '您好，我是ai健康助手，有什么可以帮您？' });
+        renderMessages();
+      }
+    } else {
+      chatBox.style.display = 'none';
+    }
+  });
+
+  // 存储聊天历史消息，格式同后端一致
+  let chatHistory = [];
+
+  // 渲染聊天记录
+  function renderMessages() {
+    const chatMessagesDiv = document.getElementById('chatMessages');
+    chatMessagesDiv.innerHTML = '';
+    chatHistory.forEach(msg => {
+      const div = document.createElement('div');
+      div.style.marginBottom = '8px';
+      if (msg.role === 'user') {
+        div.style.textAlign = 'right';
+        div.innerHTML = `<b>我：</b>${msg.content}`;
+      } else {
+        div.style.textAlign = 'left';
+        div.innerHTML = `<b>AI：</b>${msg.content}`;
+      }
+      chatMessagesDiv.appendChild(div);
+    });
+    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight; // 自动滚动到底部
+  }
+
+  // 发送消息到后端
+  async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const userInput = input.value.trim();
+    if (!userInput) return;
+
+    // 添加用户消息到历史
+    chatHistory.push({ role: 'user', content: userInput });
+    renderMessages();
+
+    input.value = '';
+    input.disabled = true;
+
+    try {
+      // 从 meta 标签获取 CSRF token 和 header 名称
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      const response = await fetch('/api/chat/doubao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          [csrfHeader]: csrfToken  // ← 加上 CSRF token
+        },
+        body: JSON.stringify({ messages: chatHistory })
+      });
+
+      const data = await response.json();
+
+      chatHistory.push({ role: 'assistant', content: data.answer || '没有回答' });
+      renderMessages();
+    } catch (err) {
+      alert('请求失败：' + err.message);
+    } finally {
+      input.disabled = false;
+      input.focus();
+    }
+  }
+
+
+  // 按回车也发送
+  document.getElementById('chatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      sendChat();
+    }
+  });
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

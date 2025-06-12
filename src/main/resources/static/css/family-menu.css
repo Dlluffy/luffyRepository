@@ -1,0 +1,261 @@
+/*!*body {*!*/
+/*!*    font-family: 'Arial', sans-serif;*!*/
+/*!*    background-color: #f4f7fc;*!*/
+/*!*}*!*/
+
+/*!*.navbar {*!*/
+/*!*    background-color: #007bff;*!*/
+/*!*}*!*/
+
+/*!*.navbar-nav .nav-link {*!*/
+/*!*    color: #ffffff !important;*!*/
+/*!*    font-weight: 500;*!*/
+/*!*    padding: 15px 20px;*!*/
+/*!*}*!*/
+
+/*!*.navbar-nav .nav-link:hover {*!*/
+/*!*    color: #ffd700 !important;*!*/
+/*!*    background-color: rgba(0, 0, 0, 0.1);*!*/
+/*!*}*!*/
+
+/*!*.container {*!*/
+/*!*    padding: 20px;*!*/
+/*!*}*!*/
+
+/*!*.footer {*!*/
+/*!*    text-align: center;*!*/
+/*!*    padding: 20px 0;*!*/
+/*!*    background-color: #f8f9fa;*!*/
+/*!*    margin-top: 40px;*!*/
+/*!*}*!*/
+
+/*body {*/
+/*    font-family: 'Microsoft YaHei', sans-serif;*/
+/*    background: linear-gradient(to right, #e3f2fd, #f0f4f7);*/
+/*}*/
+
+/*!* 统一作用域限制在 family-menu 中 *!*/
+/*.family-menu .family-navbar {*/
+/*    background: rgba(255, 255, 255, 0.4);*/
+/*    backdrop-filter: blur(12px);*/
+/*    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);*/
+/*    border-bottom: 1px solid rgba(255, 255, 255, 0.3);*/
+/*}*/
+
+/*.family-menu .navbar-brand,*/
+/*.family-menu .nav-link {*/
+/*    color: #2c3e50 !important;*/
+/*    font-weight: 600;*/
+/*    transition: all 0.3s ease;*/
+/*}*/
+
+/*.family-menu .nav-link:hover {*/
+/*    color: #007bff !important;*/
+/*    background-color: rgba(255, 255, 255, 0.2);*/
+/*    border-radius: 8px;*/
+/*}*/
+
+/*.family-menu .nav-link.active {*/
+/*    color: #007bff !important;*/
+/*    font-weight: bold;*/
+/*    background-color: rgba(255, 255, 255, 0.3);*/
+/*    border-radius: 8px;*/
+/*}*/
+
+
+
+
+
+
+
+/*!* 页脚样式 *!*/
+/*.footer {*/
+/*    text-align: center;*/
+/*    padding: 20px 0;*/
+/*    background-color: rgba(255, 255, 255, 0.4);*/
+/*    border-top: 1px solid rgba(255, 255, 255, 0.3);*/
+/*    margin-top: 40px;*/
+/*    font-size: 0.9rem;*/
+/*    color: #666;*/
+/*    backdrop-filter: blur(10px);*/
+/*}*/
+
+/*.family-menu .family-menu-container {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: space-between; !* 左右两端对齐 *!*/
+/*    max-width: 100%;*/
+/*    padding-left: 15px;*/
+/*    padding-right: 15px;*/
+/*    margin: 0 auto;*/
+/*}*/
+
+/*.family-menu .family-navbar-brand {*/
+/*    font-size: 1.8rem; !* 字体大 *!*/
+/*    font-weight: 700;*/
+/*    color: #2c3e50 !important;*/
+/*    margin: 0; !* 去除默认外边距 *!*/
+/*    !* 不用 margin-right:auto，因为 justify-content:space-between 已经让左右两边对齐 *!*/
+/*}*/
+
+/*.family-menu .navbar-nav {*/
+/*    margin-left: auto; !* 右边菜单项靠右 *!*/
+/*}*/
+
+/*.logout-btn {*/
+/*    margin-left: 10px;*/
+/*    transition: background-color 0.3s ease, box-shadow 0.3s ease;*/
+/*}*/
+
+/*.logout-btn:hover {*/
+/*    background-color: #c82333;*/
+/*    box-shadow: 0 0 8px rgba(200, 35, 51, 0.6);*/
+/*}*/
+/*!* 让登出按钮看起来像导航链接，但略有区分 *!*/
+/*.family-menu .logout-form {*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+
+/*.family-menu .logout-link {*/
+/*    background: transparent;*/
+/*    border: none;*/
+/*    color: #2c3e50 !important;*/
+/*    font-weight: 600;*/
+/*    text-decoration: none;*/
+/*    padding: 15px 20px;*/
+/*    display: inline-block;*/
+/*    transition: all 0.3s ease;*/
+/*}*/
+
+/*.family-menu .logout-link:hover {*/
+/*    color: #dc3545 !important; !* 红色 hover 提示 *!*/
+/*    background-color: rgba(255, 255, 255, 0.2);*/
+/*    border-radius: 8px;*/
+/*}*/
+/*.navbar-nav {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 10px; !* 你可以调整间距 *!*/
+/*}*/
+
+/*.navbar-nav .nav-item {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*}*/
+body {
+    margin: 0;
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #f5f7fa;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease-in-out;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: 0.5px;
+    transition: color 0.3s;
+}
+
+.navbar-brand:hover {
+    color: #111;
+    cursor: default;
+}
+
+.navbar-nav .nav-link {
+    padding: 12px 20px;
+    font-weight: 500;
+    font-size: 1rem;
+    color: #333;
+    border-radius: 12px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    background-color: #e6f0ff;
+    color: #007aff;
+    transform: translateY(-1px);
+}
+
+.logout-link {
+    color: #e63946;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #ffcccc;
+    color: #b71c1c;
+    transform: translateY(-1px);
+    cursor: pointer;
+}
+
+.container {
+    padding-top: 20px;
+}
+
+.footer {
+    background: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    color: #777;
+    font-size: 0.9rem;
+    border-top: 1px solid #ddd;
+    margin-top: 60px;
+}
+.quick-widget {
+    position: fixed;
+    right: 20px;
+    top: 40%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 999;
+}
+
+
+
+/*navbar2*/
+.widget-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.widget-btn:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    background-color: #f9f9f9;
+}
+
+.widget-btn i {
+    font-size: 16px;
+}
+
+
+
+
+
+

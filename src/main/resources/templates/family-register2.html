@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>家属注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f2f4f8;
+            font-family: "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border: none;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .form-control, select, textarea {
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        button {
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .form-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        #message {
+            text-align: center;
+            color: red;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h3 class="text-center mb-4">家属注册</h3>
+    <form id="registerForm" action="/family-register-elder" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <!-- 老人信息 -->
+        <div class="form-section-title">老人信息</div>
+        <div class="mb-3">
+            <label for="elderName" class="form-label">姓名</label>
+            <input type="text" class="form-control" id="elderName" name="elderName" required>
+        </div>
+        <div class="mb-3">
+            <label for="gender" class="form-label">性别</label>
+            <select class="form-control" id="gender" name="gender" required>
+                <option value="">请选择</option>
+                <option value="M">男</option>
+                <option value="F">女</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="relation" class="form-label">关系</label>
+            <input type="text" class="form-control" id="relation" name="relation" required>
+        </div>
+        <div class="mb-3">
+            <label for="idCard" class="form-label">身份证号</label>
+            <input type="text" class="form-control" id="idCard" name="idCard" maxlength="18" required>
+        </div>
+        <div class="mb-3">
+            <label for="age" class="form-label">年龄</label>
+            <input type="number" class="form-control" id="age" name="age" min="0" max="150" required>
+        </div>
+        <div class="mb-3">
+            <label for="contact" class="form-label">联系电话</label>
+            <input type="tel" class="form-control" id="contact" name="contact" required>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">地址</label>
+            <input type="text" class="form-control" id="address" name="address" required>
+        </div>
+        <div class="mb-3">
+            <label for="allergies" class="form-label">过敏史</label>
+            <textarea class="form-control" id="allergies" name="allergies" rows="2" placeholder="如无请留空"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="medicalHistory" class="form-label">病史</label>
+            <textarea class="form-control" id="medicalHistory" name="medicalHistory" rows="2" placeholder="如无请留空"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="emergencyContact" class="form-label">紧急联系人</label>
+            <input type="text" class="form-control" id="emergencyContact" name="emergencyContact">
+        </div>
+        <div class="mb-3">
+            <label for="institutionId" class="form-label">所属机构ID</label>
+            <input type="number" class="form-control" id="institutionId" name="institutionId" required>
+        </div>
+
+        <!-- 家属信息 -->
+        <div class="form-section-title">家属账号</div>
+        <div class="mb-3">
+            <label for="username" class="form-label">用户名</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">密码</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">注册</button>
+        <div class="text-center mt-3">
+            已有账号？<a href="/to-family-login">前往登录</a>
+        </div>
+    </form>
+    <p id="message"></p>
+</div>
+<!-- Toast 提示框 -->
+<div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="successToast" data-bs-delay="3000">
+    <div class="d-flex">
+        <div class="toast-body">
+            注册成功！
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // 显示 Toast
+        const toast = new bootstrap.Toast(document.getElementById("successToast"));
+        toast.show();
+
+        // 可选：延迟跳转
+        setTimeout(() => {
+            window.location.href = "/to-family-login";
+        }, 3000);
+    });
+</script>
+
+</body>
+</html>
